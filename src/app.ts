@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as morgan from 'morgan';
+import { StubRouter } from '../routes/stub-router'
 import { logger } from './logger';
 
 export interface IConfiguration {
@@ -40,6 +41,11 @@ export class App {
             })
         });
         this.app.use('/', router);
+
+        const stubRouter = new StubRouter();
+        stubRouter.Routers.forEach(item => this.app.use(item.name, item.router));
+        logger.info('Stub Routes setted');
+
     }
 
     private listen() {

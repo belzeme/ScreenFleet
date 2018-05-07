@@ -24,7 +24,7 @@
 	"coverage": "nyc --include=\"src/**/*.ts\" --reporter=text --reporter=html --reporter=lcov mocha --compilers ts:ts-node/register --recursive \"test/**/*-spec.ts\"",
 	"watch": "npm run build -- --watch",
 	"watch:test": "npm run test -- --watch",
-	"start": "yarn run build && node dist/server.js"
+	"start": "yarn build && node dist/src/server.js"
     },
     "dependencies": {
 	"express": "^4.16.3",
