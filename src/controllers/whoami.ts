@@ -41,7 +41,7 @@ export class WhoAmICtrl extends BaseController {
     private getIDbyTVIP(request: Request, response: Response) {
         const body = request.body;
 
-        logger.debug(`route::whoami::received::${JSON.stringify(body)}`);
+        logger.debug(`route::whoami::received <- ${JSON.stringify(body)}`);
         if (!body.ip) {
             response.send({ "ip": "string" });
             return;

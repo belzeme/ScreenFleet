@@ -9,6 +9,7 @@ import { BaseController } from './controllers/controller';
 import { ListCtrl } from './controllers/list';
 import { ListTVCtrl } from './controllers/list-tv';
 import { ViewCtrl } from './controllers/view';
+import { ViewTVCtrl } from './controllers/view-tv';
 import { WhoAmICtrl } from './controllers/whoami';
 // Loggers
 import { logger } from './logger';
@@ -118,8 +119,9 @@ export class Server {
         const viewCtrl = new ViewCtrl();
         const listCtrl = new ListCtrl();
         const listTVCtrl = new ListTVCtrl(this.dbConnection);
+        const viewTVCtrl = new ViewTVCtrl(this.dbConnection);
 
-        this.ctrls = [indexCtrl, administratorCtrl, whoAmICtrl, viewCtrl, listCtrl, listTVCtrl];
+        this.ctrls = [indexCtrl, administratorCtrl, whoAmICtrl, viewCtrl, listCtrl, listTVCtrl, viewTVCtrl];
 
         this.app.use(express.static(path.join(__dirname, 'public')));
         logger.info('server::controllers::public route setted');
