@@ -19,10 +19,12 @@ connection.on('error', console.error.bind(console, 'mongodb error'));
 
 describe('TV', () => {
     describe('create()', () => {
-        it('should create a new TV', () => {
+        it('should create adn store a new TV', () => {
             const tv: ITV = {
                 name: 'Local TV',
-                ip: '127.0.0.1'
+                ip: '127.0.0.1',
+                assets: ["https://lol-in-tabs.io"],
+                html: `<div>Hello World!</div>`
             };
 
             // create user and return promise
@@ -31,6 +33,8 @@ describe('TV', () => {
                 .then(value => {
                     expect(value.name).to.equal(tv.name);
                     expect(value.ip).to.equal(tv.ip);
+                    expect(value.html).to.equal(tv.html);
+                    expect(value.assets).to.equal(tv.assets);
                     return;
                 })
                 .catch(reason => console.log(reason));

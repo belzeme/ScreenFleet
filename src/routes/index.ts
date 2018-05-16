@@ -1,11 +1,12 @@
-import { Router } from 'express';
-import { logger } from '../logger';
 import { AdministratorRoute } from './administrator';
+import { ListRoute } from './list';
 import { BaseRoute } from './route';
+import { ViewRoute } from './view';
+import { WhoAmIRoute } from './whoami';
 
 export class IndexRoute extends BaseRoute {
     public constructor() {
-        super('api', '1.0.0');
+        super('', '1.0.0');
         this.setMethods();
         this.setLinks();
         this.setRoute();
@@ -19,25 +20,10 @@ export class IndexRoute extends BaseRoute {
     }
 
     private setLinks() {
-        const adminRoute = new AdministratorRoute();
-
-        this.routes.push(adminRoute.getAPIRoute());
-
-        this.routes.push({
-            methods: [{ group: 'au', name: 'GET' }],
-            name: 'list',
-            version: this.version
-        });
-        this.routes.push({
-            methods: [{ group: 'au', name: 'GET' }],
-            name: 'view',
-            version: this.version
-        });
-        this.routes.push({
-            methods: [{ group: 'au', name: 'GET' }],
-            name: 'authentication',
-            version: this.version
-        })
+        this.routes.push(new AdministratorRoute().getAPIRoute());
+        this.routes.push(new WhoAmIRoute().getAPIRoute());
+        this.routes.push(new ListRoute().getAPIRoute());
+        this.routes.push(new ViewRoute().getAPIRoute());
     }
 
     private setRoute() {

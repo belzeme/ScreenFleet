@@ -1,5 +1,6 @@
 export interface ITV {
     name: string;
     ip: string;
-    composition?: any;
+    html?: string;
+    assets: string[];
 }

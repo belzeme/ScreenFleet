@@ -1,8 +1,9 @@
 import { Schema } from 'mongoose';
 
 export const tvSchema: Schema = new Schema({
-    composition: Array,
+    assets: Array,
     createdAt: Date,
+    html: String,
     ip: String,
     name: String
 });

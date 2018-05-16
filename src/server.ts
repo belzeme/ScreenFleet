@@ -5,10 +5,15 @@ import * as morgan from 'morgan';
 import * as path from 'path';
 import { IndexCtrl } from './controllers';
 import { AdministratorCtrl } from './controllers/administrator';
+import { BaseController } from './controllers/controller';
+import { ListCtrl } from './controllers/list';
+import { ListTVCtrl } from './controllers/list-tv';
+import { ViewCtrl } from './controllers/view';
 import { WhoAmICtrl } from './controllers/whoami';
 // Loggers
 import { logger } from './logger';
-import { IModel } from './models/model';
+
+
 
 import errorHandler = require('errorhandler');
 import methodOverride = require('method-override');
@@ -28,13 +33,13 @@ export interface IConfiguration {
 export class Server {
     private app: express.Application;
     private configuration: IConfiguration | null;
-    private model: IModel;
+    private ctrls: BaseController[];
     private dbConnection: mongoose.Connection | null;
 
     constructor() {
         this.app = express();
         this.configuration = null;
-        this.model = { administrator: null, tv: null };
+        this.ctrls = [];
         this.dbConnection = null;
 
         this.setMiddlewares();
@@ -72,8 +77,7 @@ export class Server {
         // Connect to mongoose
         this.dbConnection = mongoose.createConnection(this.configuration.mongodbConnection);
         logger.info(`Connection on database at ${this.configuration.mongodbConnection}`);
-        // this.model.administrator = this.dbConnection.model<IAdministratorModel>('Administrator', administratorSchema);
-        // this.model.tv = this.dbConnection.model<ITVModel>('TV', tvSchema);
+
         this.setControllers();
         this.listen();
     }
@@ -107,20 +111,29 @@ export class Server {
         if (!this.dbConnection) {
             throw new Error('server::ServerControllers::DBConnection is inexistant');
         }
+
         const indexCtrl = new IndexCtrl();
         const administratorCtrl = new AdministratorCtrl(this.dbConnection);
         const whoAmICtrl = new WhoAmICtrl(this.dbConnection);
+        const viewCtrl = new ViewCtrl();
+        const listCtrl = new ListCtrl();
+        const listTVCtrl = new ListTVCtrl(this.dbConnection);
+
+        this.ctrls = [indexCtrl, administratorCtrl, whoAmICtrl, viewCtrl, listCtrl, listTVCtrl];
 
         this.app.use(express.static(path.join(__dirname, 'public')));
-        logger.info('server::ServerControllers::public route setted');
-        this.app.use(indexCtrl.Router);
-        logger.info('server::ServerControllers::index route setted');
-        this.app.use(`/${administratorCtrl.Route.Name}`, administratorCtrl.Router);
-        logger.info('server::ServerControllers::administrator route setted');
-        this.app.use(`/${whoAmICtrl.Route.Name}`, whoAmICtrl.Router);
-        logger.info('server::ServerControllers::whoAmI route setted');
+        logger.info('server::controllers::public route setted');
+
+        this.setRouters();
     }
 
+    private setRouters() {
+        this.ctrls.forEach(item => {
+            const name = item.Route.Name === '' ? 'index' : item.Route.Name;
+            this.app.use(`/${item.Route.Name}`, item.Router);
+            logger.info(`server::controllers::${name} route setted`);
+        });
+    }
 }
 
 // Part of the script that launches the application.

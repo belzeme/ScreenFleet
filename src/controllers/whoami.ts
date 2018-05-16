@@ -7,6 +7,8 @@ import { BaseController } from './controller';
 import mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
+import { logger } from '../logger';
+
 export class WhoAmICtrl extends BaseController {
     private dao: mongoose.Model<ITVModel>;
 
@@ -39,6 +41,7 @@ export class WhoAmICtrl extends BaseController {
     private getIDbyTVIP(request: Request, response: Response) {
         const body = request.body;
 
+        logger.debug(`route::whoami::received::${JSON.stringify(body)}`);
         if (!body.ip) {
             response.send({ "ip": "string" });
             return;
@@ -47,7 +50,7 @@ export class WhoAmICtrl extends BaseController {
         this.findTVByIP(body.ip)
             .then(tv => {
                 if (tv) {
-                    response.send(tv._id);
+                    response.send({ id: tv._id });
                 } else {
                     response.status(400);
                     response.send(`${body.ip} is not a registered device`);
