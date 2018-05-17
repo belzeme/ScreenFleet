@@ -60,7 +60,7 @@ export class ViewTVCtrl extends BaseController {
         // Check if the received data is valid
         if (!this.validateTVData(body)) {
             const res = {
-                'hint': `A valid TV object is { 'name':'string', 'ip':'string', 'html'?: 'string', 'assets':'string[]'}`,
+                'hint': `A valid TV object is { 'name':'string', 'ip':'string', 'html'?: 'string', 'assets':'{name: string, link: name}[]'}`,
                 'message': `${JSON.stringify(body)} is not a valid TV object.`
             };
             response.status(400);
@@ -121,7 +121,7 @@ export class ViewTVCtrl extends BaseController {
         // We check if the tv id is given and the data are valid.
         if (!this.validateTVData(body) || !body.id) {
             const res = {
-                hint: `A valid PutTV object is { 'name':'string', 'ip':'string', 'html'?: 'string', 'assets':'string[]', 'id':'ObjectID'}`,
+                hint: `A valid PutTV object is { 'name':'string', 'ip':'string', 'html'?: 'string',  'assets':'{name: string, link: name}[]', 'id':'ObjectID'}`,
                 message: 'The given data are not valid',
             }
             response.status(400);
