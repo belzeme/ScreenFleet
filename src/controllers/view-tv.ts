@@ -77,6 +77,7 @@ export class ViewTVCtrl extends BaseController {
                 new this.dao(tvData).save()
                     .then(value => {
                         response.send(JSON.stringify(value));
+                        this.updateTV(value);
                     })
                     .catch(reason => {
                         response.status(500);
@@ -121,7 +122,7 @@ export class ViewTVCtrl extends BaseController {
 
         logger.debug(`route::view/tv::received <- ${JSON.stringify(body)}`);
         // We check if the tv id is given and the data are valid.
-        if (!this.validateTVData(body) || !body.id) {
+        if (!this.validateTVData(body)) {
             const res = {
                 hint: `A valid PutTV object is { 'name':'string', 'ip':'string', 'html'?: 'string',  'assets':'{name: string, link: name}[]', 'id':'ObjectID'}`,
                 message: 'The given data are not valid',
@@ -129,25 +130,32 @@ export class ViewTVCtrl extends BaseController {
             response.status(400);
             response.send(res);
         }
-        // We find the object by id and update it.
-        this.dao.findByIdAndUpdate(body.id, {
-            assets: body.assets,
-            html: body.html,
-            ip: body.ip,
-            name: body.name
-        })
-            .then(res => {
-                if (res) {
-                    response.send(res);
-                } else {
-                    response.status(500);
-                    response.send(JSON.stringify({ message: 'Object not found' }));
-                }
+
+        if (body.id) {
+            // We find the object by id and update it.
+            this.dao.findByIdAndUpdate(body.id, {
+                assets: body.assets,
+                html: body.html,
+                ip: body.ip,
+                name: body.name
             })
-            .catch(reason => {
-                response.status(400);
-                response.send(reason);
-            });
+                .then(res => {
+                    if (res) {
+                        response.send(res);
+                        this.updateTV(res);
+                    } else {
+                        response.status(500);
+                        response.send(JSON.stringify({ message: 'Object not found' }));
+                    }
+                })
+                .catch(reason => {
+                    response.status(400);
+                    response.send(reason);
+                });
+        }
+        else {
+            this.newTV(request, response);
+        }
     };
 
     private patchTV(request: Request, response: Response) {
@@ -168,6 +176,7 @@ export class ViewTVCtrl extends BaseController {
             .then(res => {
                 if (res) {
                     response.send(res);
+                    this.updateTV(res);
                 } else {
                     response.status(500);
                     response.send(JSON.stringify({ message: 'Object not found' }));
@@ -205,5 +214,18 @@ export class ViewTVCtrl extends BaseController {
                 response.send(500);
                 response.send(reason);
             });
+    }
+
+    private updateTV(tv: ITVModel) {
+        const option: http.RequestOptions = {
+            'host': tv.ip,
+            'method': 'GET',
+            'port': '4000'
+        };
+
+        logger.debug(`Sending an update notification on the ${tv.name} tv`);
+
+        const req = http.request(option);
+        req.end();
     }
 }
