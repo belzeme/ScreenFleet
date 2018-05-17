@@ -136,8 +136,15 @@ export class ViewTVCtrl extends BaseController {
                 if (res) {
                     // The tv exist we update it
                     res.set(body);
-                    response.send(res);
-                    this.updateTV(res);
+                    res.save()
+                        .then(value => {
+                            response.send(JSON.stringify(value));
+                            this.updateTV(value);
+                        })
+                        .catch(reason => {
+                            response.status(500);
+                            response.send(JSON.stringify(reason));
+                        })
                 } else {
                     // The tv does not exist
                     this.newTV(request, response);
