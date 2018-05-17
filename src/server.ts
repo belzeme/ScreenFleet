@@ -14,8 +14,6 @@ import { WhoAmICtrl } from './controllers/whoami';
 // Loggers
 import { logger } from './logger';
 
-
-
 import errorHandler = require('errorhandler');
 import methodOverride = require('method-override');
 import mongoose = require('mongoose');

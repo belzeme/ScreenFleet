@@ -1,5 +1,6 @@
 {
     "port":3000,
     "version":"1.0.0",
-    "mongodbConnection":"mongodb://localhost:27017/ScreenFleet"
+    "mongodbConnection":"mongodb://localhost:27017/ScreenFleet",
+    "clientNotificationPort":4000
 }
