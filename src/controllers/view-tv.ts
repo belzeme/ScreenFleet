@@ -124,39 +124,27 @@ export class ViewTVCtrl extends BaseController {
         // We check if the tv id is given and the data are valid.
         if (!this.validateTVData(body)) {
             const res = {
-                hint: `A valid PutTV object is { 'name':'string', 'ip':'string', 'html'?: 'string',  'assets':'{name: string, link: name}[]', 'id':'ObjectID'}`,
+                hint: `A valid PutTV object is { 'name':'string', 'ip':'string', 'html'?: 'string',  'assets':'{name: string, link: name}[]', 'id?':'ObjectID'}`,
                 message: 'The given data are not valid',
             }
             response.status(400);
             response.send(res);
         }
 
-        if (body.id) {
-            // We find the object by id and update it.
-            this.dao.findByIdAndUpdate(body.id, {
-                assets: body.assets,
-                html: body.html,
-                ip: body.ip,
-                name: body.name
+        this.findTVByName(body.name)
+            .then(res => {
+                if (res) {
+                    // The tv exist we update it
+                    res.set(body);
+                    response.send(res);
+                    this.updateTV(res);
+                } else {
+                    // The tv does not exist
+                    this.newTV(request, response);
+                }
             })
-                .then(res => {
-                    if (res) {
-                        response.send(res);
-                        this.updateTV(res);
-                    } else {
-                        response.status(500);
-                        response.send(JSON.stringify({ message: 'Object not found' }));
-                    }
-                })
-                .catch(reason => {
-                    response.status(400);
-                    response.send(reason);
-                });
-        }
-        else {
-            this.newTV(request, response);
-        }
-    };
+            .catch(reason => logger.error(reason));
+    }
 
     private patchTV(request: Request, response: Response) {
         const body = request.body;
@@ -226,6 +214,7 @@ export class ViewTVCtrl extends BaseController {
         logger.debug(`Sending an update notification on the ${tv.name} tv`);
 
         const req = http.request(option);
+        req.on('error', reason => logger.error(reason.message));
         req.end();
     }
 }
