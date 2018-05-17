@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
+import { ITV } from '../interfaces';
 import { logger } from '../logger';
 import { ITVModel } from '../models/tv';
 import { ViewTVRoute } from '../routes/view-tv';
 import { tvSchema } from '../schemas/tv';
 import { BaseController } from './controller';
 
+import http = require('http');
 import mongoose = require('mongoose');
-import { ITV } from '../interfaces';
+
 mongoose.Promise = global.Promise;
 
 

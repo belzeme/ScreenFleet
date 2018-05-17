@@ -18,6 +18,8 @@ import errorHandler = require('errorhandler');
 import methodOverride = require('method-override');
 import mongoose = require('mongoose');
 
+mongoose.Promise = global.Promise;
+
 const CONF_NAME = {
     server: 'server-config.json'
 }
@@ -96,7 +98,14 @@ export class Server {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
 
-        mongoose.Promise = global.Promise;
+        // Set server to accept CORS
+        this.app.use((req, res, next) => {
+            res.setHeader('Acces-Control-Allow-Origin', '*');
+            res.setHeader('Acces-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+            res.setHeader('Acces-Control-Allow-Headers', 'X-Requested-With,content-type');
+            res.setHeader('Acces-Control-Allow-Credentials', 'true');
+            next();
+        });
 
         // Error mgmt
         this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
