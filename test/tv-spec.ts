@@ -23,7 +23,7 @@ describe('TV', () => {
             const tv: ITV = {
                 name: 'Local TV',
                 ip: '127.0.0.1',
-                assets: ["https://lol-in-tabs.io"],
+                assets: [{ name: 'lol', link: "https://lol-in-tabs.io" }],
                 html: `<div>Hello World!</div>`
             };
 
