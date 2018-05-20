@@ -1,12 +1,30 @@
 import { BaseRoute } from './route';
 
+/**
+ * @namespace ScreenFleet
+ */
+
+/**
+ * @namespace ScreenFleet.routes
+ */
 export class ViewTVRoute extends BaseRoute {
+    /**
+     * ViewTVRoute
+     * @class ScreenFleet.routes.ViewTVRoute
+     * @classdesc The /view/tv route
+     */
+
     public constructor() {
         super('view/tv', '1.0.0');
         this.setMethods();
         this.setRoutes();
     }
 
+    /**
+     * setMethods
+     * @method ScreenFleet.routes.ViewTVRoute#setMethods
+     * @private
+     */
     private setMethods() {
         this.methods.push({ group: 'au', name: 'GET' });
         this.methods.push({ group: 'au', name: 'POST' });
@@ -15,6 +33,11 @@ export class ViewTVRoute extends BaseRoute {
         this.methods.push({ group: 'a', name: 'DELETE' });
     }
 
+    /**
+     * setRoutes
+     * @method ScreenFleet.routes.ViewTVRoute#setRoutes
+     * @private
+     */
     private setRoutes() {
         this.router.get('/', (req, res) => this.emit('onGETRequest', req, res));
         this.router.post('/', (req, res) => {

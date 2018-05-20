@@ -3,20 +3,33 @@ import { logger } from '../logger';
 import { IAPIRoute } from '../models/screenfleet-models';
 import { BaseRoute } from './route';
 
+/**
+ * @namespace ScreenFleet
+ */
+
+/**
+ * @namespace ScreenFleet.routes
+ */
+
+
 export class AdministratorRoute extends BaseRoute {
-    public static create(router: Router) {
-        logger.info('AdministratorRoute::create::creating adminstrator route.');
-        const route = new AdministratorRoute();
-
-        router.get('/', (req, res) => res.send(route.formatIndexResponse()));
-    }
-
+    /**
+     * AdministratorRoute
+     * @extends ScreenFleet.routes.BaseRoute
+     * @class ScreenFleet.routes.AdministratorRoute
+     * @classdesc The /administrator route
+     */
     public constructor() {
         super('administrator', '1.0.0');
         this.setMethods();
         this.setRoutes();
     }
 
+    /**
+     * setMethods
+     * @private
+     * @method ScreenFleet.routes.AdministratorRoute#setMethods
+     */
     private setMethods() {
         this.methods.push({ group: 'a', name: 'GET' });
         this.methods.push({ group: 'a', name: 'POST' });
@@ -24,6 +37,10 @@ export class AdministratorRoute extends BaseRoute {
         this.methods.push({ group: 'a', name: 'DELETE' });
     }
 
+    /**
+     * setRoutes
+     * @method ScreenFleet.routes.AdministratorRoute#setRoutes
+     */
     private setRoutes() {
         this.router.get('/', (req, res) => this.emit('onGETRequest', req, res));
         this.router.get('/list', (req, res) => this.emit('onListRequest', req, res));

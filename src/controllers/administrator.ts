@@ -10,8 +10,25 @@ import mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 
+/**
+ * @namespace ScreenFleet
+ */
+
+/**
+ * @namespace ScreenFleet.controllers
+ */
 export class AdministratorCtrl extends BaseController {
+    /**
+     * The database access object used to interact with mongodb thanks to mongoose.
+     * @member {mongoose.Model<IAdministratorModel>} ScreenFleet.controllers.AdministratorCtrl#dao
+     */
     private dao: mongoose.Model<IAdministratorModel>;
+
+    /**
+     * AdministratorCtrl
+     * @class ScreenFleet.controllers.AdministratorCtrl
+     * @classdesc The /administrator route's controller
+     */
     public constructor(dbConnection: mongoose.Connection) {
         super('1.0.0', dbConnection, new AdministratorRoute());
         if (!this.dbConnection) {
@@ -24,11 +41,23 @@ export class AdministratorCtrl extends BaseController {
         this.route.on('onPOSTRequest', (req, res) => this.postAdministrator(req, res));
     }
 
+    /**
+     * getIndex
+     * @method ScreenFleet.controllers.AdministratorCtrl#getIndex
+     * @param {express.Request} request The incomming request
+     * @param {express.Response} response The response to outcome
+     */
     public getIndex(req: Request, res: Response) {
         const route = this.route as AdministratorRoute;
         res.send(route.formatIndexResponse());
     }
 
+    /**
+     * listAdministrators
+     * @method ScreenFleet.controllers.AdministratorCtrl#listAdministrator
+     * @param {express.Request} request The incomming request
+     * @param {express.Response} response The response to outcome
+     */
     public listAdministrators(requset: Request, response: Response) {
         const adminList: IAdministratorList = [];
         this.dao
@@ -40,6 +69,12 @@ export class AdministratorCtrl extends BaseController {
             .catch(reason => response.send(reason));
     }
 
+    /**
+     * findAdministratorByName
+     * @method ScreenFleet.controllers.AdministratorCtrl#getIndex
+     * @param {express.Request} request The incomming request
+     * @param {express.Response} response The response to outcome
+     */
     private findAdministratorByName(name: string): Promise<IAdministratorModel | null> {
         return new Promise((resolve, reject) => {
             this.dao.findOne()
@@ -50,6 +85,10 @@ export class AdministratorCtrl extends BaseController {
         });
     }
 
+    /**
+     * createAdministrator
+     * @method ScreenFleet.controllers.AdministratorCtrl#createAdministrator
+     */
     private createAdministrator(data: IAdministratorPostData) {
         const administrator: IAdministrator = {
             hash: 'lol',
